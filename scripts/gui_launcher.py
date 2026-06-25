@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk 
 from scripts import gui_launcher_utils as GU
 from gui import gui_main as GM
-
+from tkinter import simpledialog
 def run_script():
     input_path = images_folder.get()
     label_file_path = entry_label_file.get()
@@ -26,6 +26,8 @@ def run_script():
 
 root = tk.Tk()
 root.title("Lancement du script")
+
+config_dict = GU.load_config_dict()
 
 tk.Label(root, text="Input path").grid(row=0, column=0)
 images_folder = tk.Entry(root, width=130)
@@ -61,12 +63,22 @@ tk.Button(root, text="Lancer", command=run_script).grid(row=10, column=3)
 
 config_var = tk.StringVar(value = 'None')
 tk.Label(root,text = 'Configuration').grid(row = 7 ,column = 0)
-chk_menu = ttk.Combobox(root,textvariable = config_var, values = ['None','Legs','Thighs'],state = 'readonly')
+chk_menu = ttk.Combobox(root,textvariable = config_var, values = ['None',] + list(config_dict.keys()),state = 'readonly')
 chk_menu.grid(row = 7,column = 1)
 
 def load_config():
-    GU.load_configuration(config_var.get(),entry_model_folder,entry_label_file,entry_output)
+    GU.load_configuration(config_var.get(),entry_model_folder,entry_label_file,entry_output,config_dict)
 tk.Button(root, text = 'Load configuration',command = load_config).grid(row = 7,column = 3)
+
+def save_config(config_dict):
+    name = simpledialog.askstring('','config name to save :')
+    if config_dict is None:
+        print('can\'t save wihtout a config.json, please consider creating it in scripts folder ' )
+    else: 
+        GU.save_config_in_json(config_dict,name,entry_model_folder,entry_label_file,entry_output)
+        config_dict = GU.load_config_dict()
+
+tk.Button(root, text = 'Save configuration',command = lambda : save_config(config_dict)).grid(row = 6,column = 3)
 
 
 tk.Button(root, text="Lancer", command=run_script).grid(row=10, column=3)
