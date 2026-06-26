@@ -3,6 +3,7 @@ from tkinter import ttk
 from scripts import gui_launcher_utils as GU
 from gui import gui_main as GM
 from tkinter import simpledialog
+
 def run_script():
     input_path = images_folder.get()
     label_file_path = entry_label_file.get()
